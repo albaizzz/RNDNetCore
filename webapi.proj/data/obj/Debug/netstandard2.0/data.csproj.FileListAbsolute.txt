@@ -1,0 +1,8 @@
+/home/albaizzz/project/dotnet/webapi.proj/data/bin/Debug/netstandard2.0/data.deps.json
+/home/albaizzz/project/dotnet/webapi.proj/data/bin/Debug/netstandard2.0/data.dll
+/home/albaizzz/project/dotnet/webapi.proj/data/bin/Debug/netstandard2.0/data.pdb
+/home/albaizzz/project/dotnet/webapi.proj/data/obj/Debug/netstandard2.0/data.csproj.CoreCompileInputs.cache
+/home/albaizzz/project/dotnet/webapi.proj/data/obj/Debug/netstandard2.0/data.AssemblyInfoInputs.cache
+/home/albaizzz/project/dotnet/webapi.proj/data/obj/Debug/netstandard2.0/data.AssemblyInfo.cs
+/home/albaizzz/project/dotnet/webapi.proj/data/obj/Debug/netstandard2.0/data.dll
+/home/albaizzz/project/dotnet/webapi.proj/data/obj/Debug/netstandard2.0/data.pdb
