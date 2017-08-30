@@ -25,6 +25,7 @@
         "dependencies": {
           "Microsoft.AspNetCore.All": "2.0.0",
           "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.DependencyInjection": "2.0.0",
           "Microsoft.NETCore.App": "2.0.0",
           "data": "1.0.0"
         },
@@ -3827,7 +3828,10 @@
       "data/1.0.0": {
         "dependencies": {
           "Dapper": "1.50.2",
-          "Microsoft.Extensions.Configuration": "2.0.0"
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.Configuration.Json": "2.0.0",
+          "Microsoft.Extensions.DependencyInjection": "2.0.0",
+          "Microsoft.Extensions.Options": "2.0.0"
         },
         "runtime": {
           "data.dll": {}

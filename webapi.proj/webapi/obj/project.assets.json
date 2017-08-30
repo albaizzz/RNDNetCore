@@ -4781,7 +4781,10 @@
         "framework": ".NETStandard,Version=v2.0",
         "dependencies": {
           "Dapper": "1.50.2",
-          "Microsoft.Extensions.Configuration": "2.0.0"
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "Microsoft.Extensions.Configuration.Json": "2.0.0",
+          "Microsoft.Extensions.DependencyInjection": "2.0.0",
+          "Microsoft.Extensions.Options": "2.0.0"
         },
         "compile": {
           "bin/placeholder/data.dll": {}
@@ -12595,6 +12598,7 @@
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.AspNetCore.All >= 2.0.0",
       "Microsoft.Extensions.Configuration >= 2.0.0",
+      "Microsoft.Extensions.DependencyInjection >= 2.0.0",
       "Microsoft.NETCore.App >= 2.0.0",
       "data >= 1.0.0"
     ]
@@ -12606,11 +12610,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/albaizzz/project/dotnet/webapi.proj/webapi/webapi.proj.csproj",
+      "projectUniqueName": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/webapi/webapi.proj.csproj",
       "projectName": "webapi.proj",
-      "projectPath": "/home/albaizzz/project/dotnet/webapi.proj/webapi/webapi.proj.csproj",
+      "projectPath": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/webapi/webapi.proj.csproj",
       "packagesPath": "/home/albaizzz/.nuget/packages/",
-      "outputPath": "/home/albaizzz/project/dotnet/webapi.proj/webapi/obj/",
+      "outputPath": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/webapi/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
@@ -12627,8 +12631,8 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "/home/albaizzz/project/dotnet/webapi.proj/data/data.csproj": {
-              "projectPath": "/home/albaizzz/project/dotnet/webapi.proj/data/data.csproj"
+            "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/data.csproj": {
+              "projectPath": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/data.csproj"
             }
           }
         }
@@ -12652,6 +12656,10 @@
             "version": "2.0.0"
           },
           "Microsoft.Extensions.Configuration": {
+            "target": "Package",
+            "version": "2.0.0"
+          },
+          "Microsoft.Extensions.DependencyInjection": {
             "target": "Package",
             "version": "2.0.0"
           }

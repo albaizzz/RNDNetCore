@@ -1,418 +1,333 @@
-// using Dapper;
-// using System;
-// using System.Collections.Generic;
-// using System.Data;
-// using System.Data.Common;
-// using System.Linq;
-// using System.Text;
-// using System.Threading.Tasks;
-// using System.Data.SqlClient;
-// using System.Reflection;
+using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Reflection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using System.IO;
 
-// namespace webapi.Data
-// {
-//     public class DapperHelper : IDisposable
-//     {
-//         #region [Constant]
-//         /// <summary>
-//         /// 기본 Conneciontstring Key 값
-//         /// </summary>
-//         const string DefaultConnectionString = "DefaultConnection";
-//         #endregion
+namespace webapi.Data.DataAccess
+{
+    public class DapperHelper : IDisposable
+    {
+        #region [Constant]
 
-//         #region [Properties]
-//         private DbProviderFactory _provider;
-//         private DbConnection _connection;
-//         private DynamicParameters _params;
+        public static IConfiguration Configuration;
+        
+        const string DefaultConnectionString = "DefaultConnection";
+        #endregion
 
-//         /// <summary>
-//         /// 데이터 소스 클래스의 공급자 구현에 대한 인스턴스를 만드는 데 사용되는 메서드의 집합을 나타냅니다.
-//         /// </summary>
-//         public DbProviderFactory Provider
-//         {
-//             get
-//             {
-//                 return _provider;
-//             }
-//         }
+        #region [Properties]
+        private DbProviderFactory _provider;
+        private DbConnection _connection;
+        private DynamicParameters _params;
+        public DbProviderFactory Provider
+        {
+            get
+            {
+                return _provider;
+            }
+        }
+        public DbConnection Connection
+        {
+            get
+            {
+                return _connection;
+            }
+        }
 
-//         /// <summary>
-//         /// 데이터베이스에 대한 연결을 나타냅니다. 
-//         /// </summary>
-//         public DbConnection Connection
-//         {
-//             get
-//             {
-//                 return _connection;
-//             }
-//         }
+        public object Params
+        {
+            get
+            {
+                return _params;
+            }
+        }
 
-//         /// <summary>
-//         /// DynamicParameters 개체를 가져옵니다.
-//         /// </summary>
-//         public object Params
-//         {
-//             get
-//             {
-//                 return _params;
-//             }
-//         }
+        private bool _handleErrors = false;
+        private string _lstError = "";
 
-//         private bool _handleErrors = false;
-//         private string _lstError = "";
+        public bool HandleExceptions
+        {
+            get { return _handleErrors; }
+            set { _handleErrors = value; }
+        }
 
-//         /// <summary>
-//         /// Exception 처리 유무값을 설정 및 가져옵니다.
-//         /// </summary>
-//         public bool HandleExceptions
-//         {
-//             get { return _handleErrors; }
-//             set { _handleErrors = value; }
-//         }
+        public string LastError
+        {
+            get { return _lstError; }
+        }
+        #endregion
 
-//         /// <summary>
-//         /// Error 정보를 가져옵니다.
-//         /// </summary>
-//         public string LastError
-//         {
-//             get { return _lstError; }
-//         }
-//         #endregion
+        #region [Constructors]
+        public DapperHelper()
+        {
+            var builder = new ConfigurationBuilder();
+            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            .Build();
+            Configuration = builder.Build();
+            CreateConnection(DefaultConnectionString);
+        }
 
-//         #region [Constructors]
-//         /// <summary>
-//         /// 생성자
-//         /// EntFramework.config 에서 ConnectionString 정보 조회
-//         /// </summary>
-//         public DapperHelper()
-//         {
-//             CreateConnection(DefaultConnectionString);
-//         }
+        public DapperHelper(string connectionString)
+        {
+            var builder = new ConfigurationBuilder();
+            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            .Build();
+            Configuration = builder.Build();
+            
+            CreateConnection(connectionString);
+        }
 
-//         /// <summary>
-//         /// 생성자
-//         /// EntFramework.config 에서 ConnectionString 정보 조회
-//         /// </summary>
-//         /// <param name="connectionString">ConnectionString Key</param>
-//         public DapperHelper(string connectionString)
-//         {
-//             CreateConnection(connectionString);
-//         }
+        public DapperHelper(string connectionString, bool bWebConfig)
+        {
+            var builder = new ConfigurationBuilder();
+            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            .Build();
+            Configuration = builder.Build();
+            
+            CreateConnection(connectionString, bWebConfig);
+        }
 
-//         /// <summary>
-//         /// 생성자
-//         /// default : EntFramework.config 에서 ConnectionString 정보 조회
-//         /// bWebConfig 값이 true 이면 Web.config 에서 ConnectionString 정보 조회
-//         /// </summary>
-//         /// <param name="connectionString">ConnectionString Key</param>
-//         /// <param name="bWebConfig">Web.config 사용 유무</param>
-//         public DapperHelper(string connectionString, bool bWebConfig)
-//         {
-//             CreateConnection(connectionString, bWebConfig);
-//         }
+        public DapperHelper(string connectionString, bool bWebConfig, bool bConnectionName, bool useConnectionStringAsLiteral = false)
+        {
+            var builder = new ConfigurationBuilder();
+            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            .Build();
+            Configuration = builder.Build();
 
-//         /// <summary>
-//         /// 생성자
-//         /// default : EntFramework.config 에서 ConnectionString 정보 조회
-//         /// bWebConfig 값이 true 이면 Web.config 에서 ConnectionString 정보 조회
-//         /// </summary>
-//         /// <param name="connectionString">ConnectionString Key</param>
-//         /// <param name="bWebConfig">Web.config 사용 유무</param>
-//         /// <param name="bConnectionName">ConnectionString Name 여부(true : name, false : connectionString)</param>
-//         public DapperHelper(string connectionString, bool bWebConfig, bool bConnectionName, bool useConnectionStringAsLiteral = false)
-//         {
-//             CreateConnection(connectionString, bWebConfig, bConnectionName, useConnectionStringAsLiteral);
-//         }
-//         #endregion
+            CreateConnection(connectionString, bWebConfig, bConnectionName, useConnectionStringAsLiteral);
+        }
+        #endregion
 
-//         #region [Connection / Close]
-//         /// <summary>
-//         /// DB 연결 생성
-//         /// DbConnection 개체를 만들고 ConnectionString 속성이 연결 문자열에 설정됩니다.
-//         /// </summary>
-//         /// <param name="key">ConnectionString Key</param>
-//         /// <param name="bWebConfig">Web.Config 참조 여부</param>
-//         /// <param name="bConnectionName">ConnectionString Name 여부(true : name, false : connectionString)</param>
-//         private void CreateConnection(string key, bool bWebConfig = false, bool bConnectionName = true, bool useKeyAsConnectionStringLiteral = false)
-//         {
-//             ConnectionStringSettings css;
-//             if (bWebConfig && bConnectionName)
-//                 css = ConfigurationManager.ConnectionStrings[key];
-//             else if (bWebConfig && !bConnectionName)
-//                 css = ConfigurationManager.ConnectionStrings.Cast<ConnectionStringSettings>().FirstOrDefault(o => o.ConnectionString == key);
-//             else if (useKeyAsConnectionStringLiteral)
-//                 css = new ConnectionStringSettings("name", key, "System.Data.SqlClient");
-//             else
-//                 css = new ConnectionStringSettings("name", DBConfigSettings.ConnectionStrings.GetConnectionString(key), DBConfigSettings.ConnectionStrings.GetProviderName(key));
+        #region [Connection / Close]
+        
+        private void CreateConnection(string key, bool bWebConfig = false, bool bConnectionName = true, bool useKeyAsConnectionStringLiteral = false)
+        {
+            // ConnectionStringSettings css;
+            // if (bWebConfig && bConnectionName)
+            //     css = ConfigurationManager.ConnectionStrings[key];
+            // else if (bWebConfig && !bConnectionName)
+            //     css = ConfigurationManager.ConnectionStrings.Cast<ConnectionStringSettings>().FirstOrDefault(o => o.ConnectionString == key);
+            // else if (useKeyAsConnectionStringLiteral)
+            //     css = new ConnectionStringSettings("name", key, "System.Data.SqlClient");
+            // else
+            //     css = new ConnectionStringSettings("name", DBConfigSettings.ConnectionStrings.GetConnectionString(key), DBConfigSettings.ConnectionStrings.GetProviderName(key));
 
 
-//             if (css == null)
-//                 throw new ArgumentException("Invalid or missing connection string . Check if it exists in configuration file.");
+            // if (css == null)
+            //     throw new ArgumentException("Invalid or missing connection string . Check if it exists in configuration file.");
+            var conStr = Configuration.GetConnectionString("ReservationEntities");
+            var prodiverName = Configuration.GetConnectionString("ConnectionStrings:ReservationEntities:ProviderName");
+            try
+            {
+                // _provider = DbProviderFactories.GetFactory(css.ProviderName);
 
-//             try
-//             {
-//                 _provider = DbProviderFactories.GetFactory(css.ProviderName);
+                _connection = _provider.CreateConnection();
+                _connection.ConnectionString = conStr;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                // throw new CustomException("DB", "DB Conn Error");
+            }
+        }
 
-//                 _connection = _provider.CreateConnection();
-//                 _connection.ConnectionString = css.ConnectionString;
-//             }
-//             catch (Exception ex)
-//             {
-//                 throw ex;
-//                 // throw new CustomException("DB", "DB Conn Error");
-//             }
-//         }
+        /// <summary>
+        /// DB 연결 닫기
+        /// </summary>
+        private void Close()
+        {
+            if (_connection.State == ConnectionState.Open)
+            {
+                _connection.Close();
+                _connection.Dispose();
+                _provider = null;
+            }
+        }
+        #endregion
 
-//         /// <summary>
-//         /// DB 연결 닫기
-//         /// </summary>
-//         private void Close()
-//         {
-//             if (_connection.State == ConnectionState.Open)
-//             {
-//                 _connection.Close();
-//                 _connection.Dispose();
-//                 _provider = null;
-//             }
-//         }
-//         #endregion
+        #region [Parameter]
 
-//         #region [Parameter]
+        public void AddParameter(string name, object value, DbType? dbtype, ParameterDirection? direction, int? size)
+        {
+            if (_params == null) { _params = new DynamicParameters(); }
 
-//         /// <summary>
-//         /// DynamicParameters 추가
-//         /// </summary>
-//         /// <param name="name">Parameter 명</param>
-//         /// <param name="value">Parameter 값</param>
-//         /// <param name="dbtype">Parameter 개체의 데이터 형식</param>
-//         /// <param name="direction">매개 변수의 형식</param>
-//         /// <param name="size">size</param>
-//         public void AddParameter(string name, object value, DbType? dbtype, ParameterDirection? direction, int? size)
-//         {
-//             if (_params == null) { _params = new DynamicParameters(); }
+            _params.Add(name, value, dbType: dbtype, direction: direction, size: size);
+        }
 
-//             _params.Add(name, value, dbType: dbtype, direction: direction, size: size);
-//         }
+        public void AddParameter(string name, object value = null, DbType? dbtype = null, ParameterDirection? direction = null, int? size = null, byte? precision = null, byte? scale = null)
+        {
+            if (_params == null) { _params = new DynamicParameters(); }
 
-//         /// <summary>
-//         /// DynamicParameters 추가
-//         /// </summary>
-//         /// <param name="name">Parameter 명</param>
-//         /// <param name="value">Parameter 값</param>
-//         /// <param name="dbtype">Parameter 개체의 데이터 형식</param>
-//         /// <param name="direction">매개 변수의 형식</param>
-//         /// <param name="size">size</param>
-//         /// <param name="precision">precision</param>
-//         /// <param name="scale">scale</param>
-//         public void AddParameter(string name, object value = null, DbType? dbtype = null, ParameterDirection? direction = null, int? size = null, byte? precision = null, byte? scale = null)
-//         {
-//             if (_params == null) { _params = new DynamicParameters(); }
+            _params.Add(name, value: value, dbType: dbtype, direction: direction, size: size, precision: precision, scale: scale);
+        }
 
-//             _params.Add(name, value: value, dbType: dbtype, direction: direction, size: size, precision: precision, scale: scale);
-//         }
+        public T GetParameter<T>(string name)
+        {
+            return _params.Get<T>(name);
+        }
 
-//         /// <summary>
-//         /// Output 파라메터 값 반환
-//         /// </summary>
-//         /// <typeparam name="T">Generic object</typeparam>
-//         /// <param name="name">Parameter 명</param>
-//         /// <returns></returns>
-//         public T GetParameter<T>(string name)
-//         {
-//             return _params.Get<T>(name);
-//         }
+        /// <summary>
+        /// Celaer DynamicParameters 
+        /// </summary>
+        public void ClearParameter()
+        {
+            if (_params == null) { return; }
 
-//         /// <summary>
-//         /// Celaer DynamicParameters 
-//         /// </summary>
-//         public void ClearParameter()
-//         {
-//             if (_params == null) { return; }
+            _params = new DynamicParameters();
+        }
+        #endregion
 
-//             _params = new DynamicParameters();
-//         }
-//         #endregion
+        #region [Execute]
+        
+        public int Execute(string sql, object param = null, CommandType? commandType = default(CommandType?), bool IsTransRequired = false, int? commandTimeout = default(int?))
+        {
+            int affectedRowsCnt = 0;
+            IDbTransaction transaction = null;
+            try
+            {
+                if (IsTransRequired)
+                {
+                    _connection.Open();
+                    transaction = _connection.BeginTransaction();
+                }
+                affectedRowsCnt = _connection.Execute(sql, param, transaction, commandTimeout, commandType);
 
-//         #region [Execute]
-//         /// <summary>
-//         /// 연결에 대한 Transact-SQL 문(INSERT, UPDATE, DELETE)을 실행하고 영향을 받는 행의 수를 반환합니다.
-//         /// </summary>
-//         /// <param name="sql">Transact-SQL statement, stored procedure</param>
-//         /// <param name="param"></param>
-//         /// <param name="commandType">CommandType</param>
-//         /// <param name="IsTransRequired">트랜잭션 처리 유무</param>
-//         /// <param name="commandTimeout">명령 실행을 종료하고 오류를 생성하기 전 대기 시간</param>
-//         /// <returns>영향 받는 행의 수</returns>
-//         public int Execute(string sql, object param = null, CommandType? commandType = default(CommandType?), bool IsTransRequired = false, int? commandTimeout = default(int?))
-//         {
-//             int affectedRowsCnt = 0;
-//             IDbTransaction transaction = null;
-//             try
-//             {
-//                 if (IsTransRequired)
-//                 {
-//                     _connection.Open();
-//                     transaction = _connection.BeginTransaction();
-//                 }
-//                 affectedRowsCnt = _connection.Execute(sql, param, transaction, commandTimeout, commandType);
+                if (IsTransRequired) transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                if (IsTransRequired) transaction.Rollback();
 
-//                 if (IsTransRequired) transaction.Commit();
-//             }
-//             catch (Exception ex)
-//             {
-//                 if (IsTransRequired) transaction.Rollback();
+                if (_handleErrors) _lstError = ex.Message;
+                else throw ex; // CustomException System, ex
+            }
+            return affectedRowsCnt;
+        }
 
-//                 if (_handleErrors) _lstError = ex.Message;
-//                 else throw ex; // CustomException System, ex
-//             }
-//             return affectedRowsCnt;
-//         }
+        public object ExecuteScalar(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
+        {
+            object obj = null;
+            try
+            {
+                obj = _connection.ExecuteScalar(sql, param, transaction, commandTimeout, commandType);
+            }
+            catch (Exception ex)
+            {
+                if (_handleErrors) _lstError = ex.Message;
+                else throw ex; // CustomException System, ex
+            }
+            return obj;
+        }
+        #endregion
 
-//         public object ExecuteScalar(string sql, object param = null, IDbTransaction transaction = null, int? commandTimeout = null, CommandType? commandType = null)
-//         {
-//             object obj = null;
-//             try
-//             {
-//                 obj = _connection.ExecuteScalar(sql, param, transaction, commandTimeout, commandType);
-//             }
-//             catch (Exception ex)
-//             {
-//                 if (_handleErrors) _lstError = ex.Message;
-//                 else throw ex; // CustomException System, ex
-//             }
-//             return obj;
-//         }
-//         #endregion
+        #region [Query]
+        public IEnumerable<dynamic> Query(string sql, object param = null, CommandType? commandType = default(CommandType?))
+        {
+            try
+            {
+                return _connection.Query(sql, param, commandType: commandType ?? CommandType.Text);
+            }
+            catch (Exception ex)
+            {
+                if (_handleErrors) _lstError = ex.Message;
+                else throw ex; // CustomException System, ex
+            }
+            return null;
+        }
 
-//         #region [Query]
-//         /// <summary>
-//         /// 데이터베이스에서 정보를 추출하고 비즈니스 객체 모델에 채워 반환
-//         /// </summary>
-//         /// <param name="sql">Transact-SQL statement, stored procedure</param>
-//         /// <param name="param">파라메터 (ex: new {param1 = 1, param2 = "문자"})</param>
-//         /// <param name="commandType">CommandType</param>
-//         /// <returns>dynamic 열거형</returns>
-//         public IEnumerable<dynamic> Query(string sql, object param = null, CommandType? commandType = default(CommandType?))
-//         {
-//             try
-//             {
-//                 return _connection.Query(sql, param, commandType: commandType ?? CommandType.Text);
-//             }
-//             catch (Exception ex)
-//             {
-//                 if (_handleErrors) _lstError = ex.Message;
-//                 else throw ex; // CustomException System, ex
-//             }
-//             return null;
-//         }
+        public IEnumerable<T> Query<T>(string sql, object param = null, CommandType? commandType = default(CommandType?))
+        {
+            try
+            {
+                return _connection.Query<T>(sql, param, commandType: commandType ?? CommandType.Text);
+            }
+            catch (Exception ex)
+            {
+                if (_handleErrors) _lstError = ex.Message;
+                else throw ex; // CustomException System, ex
+            }
+            return null;
+        }
+        #endregion
 
-//         /// <summary>
-//         /// 데이터베이스에서 정보를 추출하고 비즈니스 객체 모델에 채워 반환
-//         /// </summary>
-//         /// <typeparam name="T">Generic object</typeparam>
-//         /// <param name="sql">쿼리문 또는 SP명</param>
-//         /// <param name="param">파라메터 (ex: new {param1 = 1, param2 = "문자"})</param>
-//         /// <param name="commandType">CommandType</param>
-//         /// <returns>Generic object 열거형</returns>
-//         public IEnumerable<T> Query<T>(string sql, object param = null, CommandType? commandType = default(CommandType?))
-//         {
-//             try
-//             {
-//                 return _connection.Query<T>(sql, param, commandType: commandType ?? CommandType.Text);
-//             }
-//             catch (Exception ex)
-//             {
-//                 if (_handleErrors) _lstError = ex.Message;
-//                 else throw ex; // CustomException System, ex
-//             }
-//             return null;
-//         }
-//         #endregion
+        #region [QuerySingle]
+        
+        public dynamic QuerySingle(string sql, object param = null, CommandType? commandType = default(CommandType?))
+        {
+            try
+            {
+                return _connection.Query(sql, param, commandType: commandType ?? CommandType.Text).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                if (_handleErrors) _lstError = ex.Message;
+                else throw ex; // CustomException System, ex
+            }
+            return null;
+        }
 
-//         #region [QuerySingle]
-//         /// <summary>
-//         /// 단일 행을 결과로 반환
-//         /// </summary>
-//         /// <param name="sql">쿼리문 또는 SP명</param>
-//         /// <param name="param">파라메터 (ex: new {param1 = 1, param2 = "문자"})</param>
-//         /// <param name="commandType">CommandType</param>
-//         /// <returns>dynamic</returns>
-//         public dynamic QuerySingle(string sql, object param = null, CommandType? commandType = default(CommandType?))
-//         {
-//             try
-//             {
-//                 return _connection.Query(sql, param, commandType: commandType ?? CommandType.Text).FirstOrDefault();
-//             }
-//             catch (Exception ex)
-//             {
-//                 if (_handleErrors) _lstError = ex.Message;
-//                 else throw ex; // CustomException System, ex
-//             }
-//             return null;
-//         }
+        public T QuerySingle<T>(string sql, object param = null, CommandType? commandType = default(CommandType?))
+        {
+            try
+            {
+                return _connection.Query<T>(sql, param, commandType: commandType ?? CommandType.Text).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                if (_handleErrors) _lstError = ex.Message;
+                else throw ex; // CustomException System, ex
+            }
+            return default(T);
+        }
+        #endregion
 
-//         /// <summary>
-//         /// 단일 행을 결과로 반환
-//         /// </summary>
-//         /// <typeparam name="T">Generic object</typeparam>
-//         /// <param name="sql">쿼리문 또는 SP명</param>
-//         /// <param name="param">파라메터 (ex: new {param1 = 1, param2 = "문자"})</param>
-//         /// <param name="commandType">CommandType</param>
-//         /// <returns>Generic object</returns>
-//         public T QuerySingle<T>(string sql, object param = null, CommandType? commandType = default(CommandType?))
-//         {
-//             try
-//             {
-//                 return _connection.Query<T>(sql, param, commandType: commandType ?? CommandType.Text).FirstOrDefault();
-//             }
-//             catch (Exception ex)
-//             {
-//                 if (_handleErrors) _lstError = ex.Message;
-//                 else throw ex; // CustomException System, ex
-//             }
-//             return default(T);
-//         }
-//         #endregion
-
-//         #region [IDisposable]
-//         // Flag: Has Dispose already been called?
-//         bool disposed = false;
+        #region [IDisposable]
+        // Flag: Has Dispose already been called?
+        bool disposed = false;
 
 
-//         // Public implementation of Dispose pattern callable by consumers.
-//         public void Dispose()
-//         {
-//             Dispose(true);
-//             GC.SuppressFinalize(this);
-//         }
+        // Public implementation of Dispose pattern callable by consumers.
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-//         // Protected implementation of Dispose pattern.
-//         protected virtual void Dispose(bool disposing)
-//         {
-//             if (disposed) return;
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed) return;
 
-//             if (disposing)
-//             {
-//                 // Free any other managed objects here.
-//                 //
-//                 _connection.Close();
-//                 _connection.Dispose();
-//                 _connection = null;
-//                 _provider = null;
-//             }
+            if (disposing)
+            {
+                // Free any other managed objects here.
+                //
+                _connection.Close();
+                _connection.Dispose();
+                _connection = null;
+                _provider = null;
+            }
 
-//             // Free any unmanaged objects(all native resources) here.
-//             //
-//             disposed = true;
-//         }
+            // Free any unmanaged objects(all native resources) here.
+            //
+            disposed = true;
+        }
 
-//         //// Implement a finalizer by using destructor style syntax
-//         //~DBHelper2()
-//         //{
-//         //    // Call the overridden Dispose method that contains common cleanup code
-//         //    // Pass false to indicate the it is not called from Dispose
-//         //    Dispose(false);
-//         //}
-//         #endregion
-//     }
-// }
+        //// Implement a finalizer by using destructor style syntax
+        //~DBHelper2()
+        //{
+        //    // Call the overridden Dispose method that contains common cleanup code
+        //    // Pass false to indicate the it is not called from Dispose
+        //    Dispose(false);
+        //}
+        #endregion
+    }
+}
