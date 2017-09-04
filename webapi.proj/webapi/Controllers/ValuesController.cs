@@ -4,18 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using webapi.data;
+using bal.business;
 
 namespace webapi.proj.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class ValuesController : BaseController
     { 
-        IConfiguration Configuration;
-        public ValuesController(IConfiguration iconfiguration)
+        public ValuesController(IConfiguration configuration):base(configuration)
         {
-            Configuration = iconfiguration;
+            
         }
+        
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
@@ -26,6 +26,11 @@ namespace webapi.proj.Controllers
 
             // Class1 cls1 = new Class1();
             // cls1.cls1();
+            // var data = dalTest.GetAlipayOrderData(10053551);
+            TestBAL TestBAL = new TestBAL();
+            var data = TestBAL.GetAlipayData(10053551);
+            // return data;
+            
             return new string[] { "value1", "value2" };
         }
 

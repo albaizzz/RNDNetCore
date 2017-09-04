@@ -1,0 +1,10 @@
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/bin/Debug/netcoreapp2.0/ConsoleApps.deps.json
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/bin/Debug/netcoreapp2.0/ConsoleApps.runtimeconfig.json
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/bin/Debug/netcoreapp2.0/ConsoleApps.runtimeconfig.dev.json
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/bin/Debug/netcoreapp2.0/ConsoleApps.dll
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/bin/Debug/netcoreapp2.0/ConsoleApps.pdb
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/obj/Debug/netcoreapp2.0/ConsoleApps.csproj.CoreCompileInputs.cache
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/obj/Debug/netcoreapp2.0/ConsoleApps.AssemblyInfoInputs.cache
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/obj/Debug/netcoreapp2.0/ConsoleApps.AssemblyInfo.cs
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/obj/Debug/netcoreapp2.0/ConsoleApps.dll
+/home/albaizzz/project/dotnet/RNDNetCore/ConsoleApps/obj/Debug/netcoreapp2.0/ConsoleApps.pdb

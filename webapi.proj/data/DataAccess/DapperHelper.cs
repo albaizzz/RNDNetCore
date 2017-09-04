@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using System.IO;
 
-namespace webapi.Data.DataAccess
+namespace webapi.data.DataAccess
 {
     public class DapperHelper : IDisposable
     {
@@ -25,7 +25,7 @@ namespace webapi.Data.DataAccess
 
         #region [Properties]
         private DbProviderFactory _provider;
-        private DbConnection _connection;
+        private IDbConnection _connection;
         private DynamicParameters _params;
         public DbProviderFactory Provider
         {
@@ -34,7 +34,7 @@ namespace webapi.Data.DataAccess
                 return _provider;
             }
         }
-        public DbConnection Connection
+        public IDbConnection Connection
         {
             get
             {
@@ -68,39 +68,39 @@ namespace webapi.Data.DataAccess
         #region [Constructors]
         public DapperHelper()
         {
-            var builder = new ConfigurationBuilder();
-            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
-            .Build();
-            Configuration = builder.Build();
+            // var builder = new ConfigurationBuilder();
+            // builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            // .Build();
+            // Configuration = builder.Build();
             CreateConnection(DefaultConnectionString);
         }
 
         public DapperHelper(string connectionString)
         {
-            var builder = new ConfigurationBuilder();
-            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
-            .Build();
-            Configuration = builder.Build();
+            // var builder = new ConfigurationBuilder();
+            // builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            // .Build();
+            // Configuration = builder.Build();
             
             CreateConnection(connectionString);
         }
 
         public DapperHelper(string connectionString, bool bWebConfig)
         {
-            var builder = new ConfigurationBuilder();
-            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
-            .Build();
-            Configuration = builder.Build();
+            // var builder = new ConfigurationBuilder();
+            // builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            // .Build();
+            // Configuration = builder.Build();
             
             CreateConnection(connectionString, bWebConfig);
         }
 
         public DapperHelper(string connectionString, bool bWebConfig, bool bConnectionName, bool useConnectionStringAsLiteral = false)
         {
-            var builder = new ConfigurationBuilder();
-            builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
-            .Build();
-            Configuration = builder.Build();
+            // var builder = new ConfigurationBuilder();
+            // builder.Add(new JsonConfigurationSource { Path = "appsettings.json", ReloadOnChange = true })
+            // .Build();
+            // Configuration = builder.Build();
 
             CreateConnection(connectionString, bWebConfig, bConnectionName, useConnectionStringAsLiteral);
         }
@@ -123,14 +123,14 @@ namespace webapi.Data.DataAccess
 
             // if (css == null)
             //     throw new ArgumentException("Invalid or missing connection string . Check if it exists in configuration file.");
-            var conStr = Configuration.GetConnectionString("ReservationEntities");
-            var prodiverName = Configuration.GetConnectionString("ConnectionStrings:ReservationEntities:ProviderName");
+            var conStr = "";//Configuration.GetConnectionString("ReservationEntities");
+            // var prodiverName = Configuration.GetConnectionString("ConnectionStrings:ReservationEntities:ProviderName");
             try
             {
                 // _provider = DbProviderFactories.GetFactory(css.ProviderName);
 
-                _connection = _provider.CreateConnection();
-                _connection.ConnectionString = conStr;
+                _connection = new SqlConnection(key);
+                _connection.ConnectionString = key;
             }
             catch (Exception ex)
             {

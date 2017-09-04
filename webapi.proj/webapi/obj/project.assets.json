@@ -4776,6 +4776,20 @@
           "lib/netstandard1.3/Microsoft.WindowsAzure.Storage.dll": {}
         }
       },
+      "bal/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "2.0.0",
+          "data": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/bal.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/bal.dll": {}
+        }
+      },
       "data/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.0",
@@ -12588,6 +12602,11 @@
         "windowsazure.storage.nuspec"
       ]
     },
+    "bal/1.0.0": {
+      "type": "project",
+      "path": "../bal/bal.csproj",
+      "msbuildProject": "../bal/bal.csproj"
+    },
     "data/1.0.0": {
       "type": "project",
       "path": "../data/data.csproj",
@@ -12600,7 +12619,7 @@
       "Microsoft.Extensions.Configuration >= 2.0.0",
       "Microsoft.Extensions.DependencyInjection >= 2.0.0",
       "Microsoft.NETCore.App >= 2.0.0",
-      "data >= 1.0.0"
+      "bal >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -12631,8 +12650,8 @@
       "frameworks": {
         "netcoreapp2.0": {
           "projectReferences": {
-            "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/data.csproj": {
-              "projectPath": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/data.csproj"
+            "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/bal.csproj": {
+              "projectPath": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/bal.csproj"
             }
           }
         }
