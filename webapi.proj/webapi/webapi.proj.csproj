@@ -16,5 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\bal\bal.csproj" />
+    <ProjectReference Include="..\model\model.csproj" />
   </ItemGroup>
 </Project>

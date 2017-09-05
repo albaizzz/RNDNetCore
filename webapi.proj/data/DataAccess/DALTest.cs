@@ -9,16 +9,10 @@ namespace webapi.data.DataAccess
 {
     public class DALTest : BaseDAL
     {
-        protected static IConfiguration Configuration;
         public DALTest(string connection)
         {
             _connection = new SqlConnection(connection);
             this._DapperHelper = new DapperHelper(connection, true, false);
-            var builder = new ConfigurationBuilder()
-             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json");
-            Configuration = builder.Build();
-
         }
 
         public AlipayData GetAlipayOrderData(int ReservationNo)

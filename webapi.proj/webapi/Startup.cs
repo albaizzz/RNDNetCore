@@ -28,7 +28,6 @@ namespace webapi.proj
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(Configuration);
-            services.Configure<MySettingss>(Configuration.GetSection("ConnectionStrings:ReservationEntities"));
             services.AddMvc();
         }
 

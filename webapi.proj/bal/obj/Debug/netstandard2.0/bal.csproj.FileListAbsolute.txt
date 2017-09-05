@@ -8,3 +8,5 @@
 /home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/obj/Debug/netstandard2.0/bal.AssemblyInfo.cs
 /home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/obj/Debug/netstandard2.0/bal.dll
 /home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/obj/Debug/netstandard2.0/bal.pdb
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/bin/Debug/netstandard2.0/model.dll
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/bal/bin/Debug/netstandard2.0/model.pdb

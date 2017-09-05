@@ -1642,6 +1642,16 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
+      },
+      "model/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.0",
+        "compile": {
+          "bin/placeholder/model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/model.dll": {}
+        }
       }
     }
   },
@@ -5621,6 +5631,11 @@
         "system.xml.xmldocument.4.3.0.nupkg.sha512",
         "system.xml.xmldocument.nuspec"
       ]
+    },
+    "model/1.0.0": {
+      "type": "project",
+      "path": "../model/model.csproj",
+      "msbuildProject": "../model/model.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -5630,7 +5645,8 @@
       "Microsoft.Extensions.Configuration.Json >= 2.0.0",
       "Microsoft.Extensions.DependencyInjection >= 2.0.0",
       "Microsoft.Extensions.Options >= 2.0.0",
-      "NETStandard.Library >= 2.0.0"
+      "NETStandard.Library >= 2.0.0",
+      "model >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -5660,7 +5676,11 @@
       },
       "frameworks": {
         "netstandard2.0": {
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/model.csproj": {
+              "projectPath": "/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/model.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

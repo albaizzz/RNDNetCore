@@ -14,3 +14,5 @@
 /home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/obj/Debug/netstandard2.0/data.AssemblyInfo.cs
 /home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/obj/Debug/netstandard2.0/data.dll
 /home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/obj/Debug/netstandard2.0/data.pdb
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/bin/Debug/netstandard2.0/model.dll
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/data/bin/Debug/netstandard2.0/model.pdb

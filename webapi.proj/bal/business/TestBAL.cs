@@ -14,7 +14,7 @@ namespace bal.business
         // }
         public AlipayData GetAlipayData(int ReservationNo)
         {
-            DALTest DALTest = new DALTest(Configuration.GetSection("ConnectionStrings:ReservationEntities:ConnectionStrings").ToString());
+            DALTest DALTest = new DALTest(Configuration["ConnectionStrings:ReservationEntities:ConnectionStrings"]);
             AlipayData data = null;
             try
             {

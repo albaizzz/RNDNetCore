@@ -18,7 +18,7 @@ namespace webapi.proj.Controllers
         
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IActionResult Get()
         {
             var config = Configuration.GetConnectionString("ConnectionStringCS");
             var configg = Configuration.GetSection("ConnectionStrings:ReservationEntities:ProviderName");
@@ -26,12 +26,15 @@ namespace webapi.proj.Controllers
 
             // Class1 cls1 = new Class1();
             // cls1.cls1();
-            // var data = dalTest.GetAlipayOrderData(10053551);
+            // var data = dalTest.GetAlipayOrderData(10053551);s
+
+            TestBAL2 test = new TestBAL2(Configuration);
+
             TestBAL TestBAL = new TestBAL();
             var data = TestBAL.GetAlipayData(10053551);
             // return data;
             
-            return new string[] { "value1", "value2" };
+            return Ok(data);
         }
 
         // GET api/values/5

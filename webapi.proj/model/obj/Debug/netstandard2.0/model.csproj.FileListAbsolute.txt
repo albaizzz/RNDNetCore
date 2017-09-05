@@ -1,0 +1,8 @@
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/bin/Debug/netstandard2.0/model.deps.json
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/bin/Debug/netstandard2.0/model.dll
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/bin/Debug/netstandard2.0/model.pdb
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/obj/Debug/netstandard2.0/model.csproj.CoreCompileInputs.cache
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/obj/Debug/netstandard2.0/model.AssemblyInfoInputs.cache
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/obj/Debug/netstandard2.0/model.AssemblyInfo.cs
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/obj/Debug/netstandard2.0/model.dll
+/home/albaizzz/project/dotnet/RNDNetCore/webapi.proj/model/obj/Debug/netstandard2.0/model.pdb
