@@ -9,6 +9,8 @@ using webapi.common;
 using webapi.business.cache;
 using webapi.data.DataModel;
 using Newtonsoft.Json;
+using webapi.common.Logging;
+using System.Text;
 
 namespace webapi.api.Controllers
 {
@@ -49,7 +51,44 @@ namespace webapi.api.Controllers
         {
             var RedisBiz = new RedisBiz(Configuration.AppSettings.RedisUrl, int.Parse(Configuration.AppSettings.LifeTime), Configuration.AppSettings.RedisOn);
             var data = RedisBiz.GetRedis("netcore.redis");
+            var logger = new Logging("GetRedisValue");
+            logger.Info(data);
             return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("SetQue")]
+        public IActionResult SetQue([FromBody] AlipayData alipayData)
+        {
+            var logger = new Logging("BBM/RequestAccessToken");
+            logger.Info(JsonConvert.SerializeObject(alipayData), "input");
+            try
+            {
+                var rabbitMqHost = Configuration.AppSettings.RabbitMqQueueHost;
+                var queueName = "netcore.queue";
+                var connectionFactory = new RabbitMQ.Client.ConnectionFactory() { HostName = rabbitMqHost };
+                using (var connection = connectionFactory.CreateConnection())
+                {
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.QueueDeclare(queueName, false, false, false, null);
+
+                        RabbitMQ.Client.IBasicProperties props = channel.CreateBasicProperties();
+
+                        props.ContentType = "text/plain";
+                        props.DeliveryMode = 2;
+
+                        var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(alipayData));
+
+                        channel.BasicPublish(string.Empty, queueName,true, props, body);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }   
+            return Ok();
         }
 
         // GET api/values/5

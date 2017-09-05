@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using webapi.data;
 using webapi.common;
+using NLog;
+using NLog.Config;
 
 namespace webapi.api
 {
@@ -34,7 +36,7 @@ namespace webapi.api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory logger)
         {
             if (env.IsDevelopment())
             {

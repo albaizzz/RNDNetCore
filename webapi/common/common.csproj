@@ -1,7 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-
+  <ItemGroup>
+    <PackageReference Include="NLog" Version="5.0.0-beta10"/>
+    <PackageReference Include="NLog.Config" Version="4.4.12"/>
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.0.0-rtm-beta5"/>
+    <PackageReference Include="NLog.Schema" Version="4.5.0-alpha04"/>
+  </ItemGroup>
 </Project>
