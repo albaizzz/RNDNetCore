@@ -13,3 +13,5 @@ We research about component in .Net framework to move to netcore like :
 - Using Configuration using in 3 tier business layer(Class Library)
 
 https://docs.google.com/presentation/d/1uvQf6MzqRsHD0oeQ7waAkwCV95rBS6HvzrCyXAY2Jls
+
+![alt text](https://docs.google.com/presentation/d/1uvQf6MzqRsHD0oeQ7waAkwCV95rBS6HvzrCyXAY2Jls)
